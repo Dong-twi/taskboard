@@ -21,16 +21,34 @@
  * - 使用 index 作為 key 是因為任務列表是唯讀的，不支持刪除或重排序
  * - 如果將來需要支持這些操作，應該使用唯一的任務 ID 作為 key
  */
-export default function TaskList({ tasks }) {
+'use client';
+import Link from "next/link";
+
+export default function TaskList({ tasks, onDelete }) {
     return (
         // 使用無序列表包裹所有任務項目
         <ul className="space-y-2">
             {/* 將每個任務轉換為列表項目
                 tasks.map 會遍歷陣列中的每個任務
                 index 參數用於提供 key 屬性 */}
-            {tasks.map((task, index) => (
-                <li key={index} className="border p-2 rounded">
-                    {task}
+            {tasks.map((task) => (
+                <li 
+                    key={task.id} 
+                    className="border p-2 rounded flex justify-between items-center"
+                    // 使用 flexbox 來對齊任務文字和刪除按鈕
+                >
+                    <Link href={`/task/${task}`}
+                        className="text-blue-600 hover:underline"
+                    >
+                        {task.title}
+                    </Link>
+                    {/* 刪除按鈕，點擊後會觸發 onDelete 函數 */}
+                    <button
+                        className="text-red-500 "
+                        onClick={() => onDelete(index)}
+                    >
+                        Delete
+                    </button>
                 </li>
             ))}
         </ul>

@@ -1,8 +1,8 @@
 'use client';
 
 import TaskList from "@/components/TaskList";
-import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 /**
  * Home 元件 - 任務管理系統的主要介面
@@ -29,6 +29,15 @@ export default function Home() {
   // 當用戶輸入時會即時更新，提交後會被清空
   const [newTask, setNewTask] = useState("");
 
+  const [nextId, setNextId] = useState(1);
+
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setTasks(savedTasks);
+    const maxId = savedTasks.reduce((max, task) => Math.max(max, task.id), 0);
+    setNextId(maxId + 1);
+  },[]);
+
   /**
    * 新增任務的處理函數
    * 
@@ -45,14 +54,34 @@ export default function Home() {
   const addTask = () => {
     console.log("Before" , tasks);
     console.log("New Task:" + newTask);
-    const updatedTasks = [...tasks, newTask];
+
+    const newTaskObj = {
+      id: nextId,
+      title: newTask,
+      description: "",
+    };
+    const updatedTasks = [...tasks, newTaskObj];
     setTasks(updatedTasks);
     console.log("After" , updatedTasks);
     setNewTask("");
+
+    setNextId(nextId + 1);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
+  const handleDelete = (index) => {
+    const newTasks = tasks.filter((_, i) => i !== index);
+    setTasks(newTasks);
+    localStorage.setItem("tasks", JSON.stringify(newTasks));
   };
 
   return (
-    <main className="p-4">
+    <main className="p-4 max-w-md mx-auto">
+      {/* 頁面標題 */}
+      {/* 使用 Tailwind CSS 的樣式來設置字體大小和粗細 */}
+      {/* text-2xl: 字體大小為 2xl
+          font-bold: 粗體字 */}
+      {/* 這裡的 h1 標籤是頁面的主要標題 */}
       <h1 className="text-2x1 font-bold">Task Board</h1>
       
       {/* 任務輸入區塊
@@ -87,7 +116,7 @@ export default function Home() {
       {/* TaskList 元件
           傳入 tasks 陣列作為 props
           負責渲染所有已新增的任務 */}
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks}  onDelete={handleDelete}/>
     </main>
   );
 }
