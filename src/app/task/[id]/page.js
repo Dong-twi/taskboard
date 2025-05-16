@@ -3,7 +3,7 @@ import { useReducer } from "nexr/navigation";
 import { useEffect, useState }  from "react";
 
 export default function TastDetaill({ params }) {
-    const router = useRouter();
+    const router = useReducer();
     const { id } = params;
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");

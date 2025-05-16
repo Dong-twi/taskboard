@@ -37,7 +37,7 @@ export default function TaskList({ tasks, onDelete }) {
                     className="border p-2 rounded flex justify-between items-center"
                     // 使用 flexbox 來對齊任務文字和刪除按鈕
                 >
-                    <Link href={`/task/${task}`}
+                    <Link href={`/task/${task.id}`}
                         className="text-blue-600 hover:underline"
                     >
                         {task.title}
@@ -45,7 +45,7 @@ export default function TaskList({ tasks, onDelete }) {
                     {/* 刪除按鈕，點擊後會觸發 onDelete 函數 */}
                     <button
                         className="text-red-500 "
-                        onClick={() => onDelete(index)}
+                        onClick={() => onDelete(task.id)}
                     >
                         Delete
                     </button>
